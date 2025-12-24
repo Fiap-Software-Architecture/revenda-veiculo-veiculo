@@ -1,10 +1,28 @@
 package br.com.fiap.veiculo.domain.model;
 
+import java.util.Arrays;
+
 public enum Marca {
     TOYOTA,
     HONDA,
     FORD,
     CHEVROLET,
-    VOLKSWAGEN
+    VOLKSWAGEN;
+
+    public static Marca from(String raw) {
+        if (raw == null) {
+            throw new IllegalArgumentException("marca não pode ser nula");
+        }
+
+        String normalized = raw.trim()
+                .replace(" ", "_")
+                .replace("-", "_")
+                .toUpperCase();
+
+        return Arrays.stream(values())
+                .filter(v -> v.name().equals(normalized))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("marca inválida: " + raw));
+    }
 }
 

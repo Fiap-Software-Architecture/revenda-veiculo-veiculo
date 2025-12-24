@@ -9,10 +9,10 @@ import java.util.UUID;
 
 public class VeiculoFactory {
 
-    public static Veiculo novo(String marca, String modelo, Integer ano, String cor, BigDecimal preco) {
+    public static Veiculo novo(Marca marca, String modelo, Integer ano, String cor, BigDecimal preco) {
         return new Veiculo(
                 UUID.randomUUID(),
-                Marca.valueOf(marca),
+                marca,
                 modelo,
                 ano,
                 cor,
