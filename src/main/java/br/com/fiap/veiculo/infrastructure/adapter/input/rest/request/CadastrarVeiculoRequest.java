@@ -1,11 +1,9 @@
 package br.com.fiap.veiculo.infrastructure.adapter.input.rest.request;
 
 import br.com.fiap.veiculo.application.dto.CadastrarVeiculoCommand;
-import br.com.fiap.veiculo.domain.model.Marca;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -13,8 +11,8 @@ import java.math.BigDecimal;
 @Data
 public class CadastrarVeiculoRequest {
 
-    @NotNull
-    private Marca marca;
+    @NotBlank
+    private String marca;
 
     @NotBlank
     private String modelo;
