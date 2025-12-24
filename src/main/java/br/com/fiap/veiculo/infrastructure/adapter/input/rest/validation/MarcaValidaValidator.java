@@ -1,5 +1,6 @@
 package br.com.fiap.veiculo.infrastructure.adapter.input.rest.validation;
 
+import br.com.fiap.veiculo.domain.exception.DomainValidationException;
 import br.com.fiap.veiculo.domain.model.Marca;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -14,7 +15,7 @@ public class MarcaValidaValidator implements ConstraintValidator<MarcaValida, St
         try {
             Marca.from(value);
             return true;
-        } catch (IllegalArgumentException ex) {
+        } catch (DomainValidationException ex) {
             return false;
         }
     }

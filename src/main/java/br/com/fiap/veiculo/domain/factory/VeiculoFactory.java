@@ -1,5 +1,6 @@
 package br.com.fiap.veiculo.domain.factory;
 
+import br.com.fiap.veiculo.domain.exception.DomainValidationException;
 import br.com.fiap.veiculo.domain.model.Marca;
 import br.com.fiap.veiculo.domain.model.StatusVeiculo;
 import br.com.fiap.veiculo.domain.model.Veiculo;
@@ -12,14 +13,14 @@ public class VeiculoFactory {
 
     public static Veiculo novoCadastro(Marca marca, String modelo, Integer ano, String cor, BigDecimal preco) {
 
-        if (marca == null) throw new IllegalArgumentException("marca é obrigatória");
-        if (modelo == null || modelo.isBlank()) throw new IllegalArgumentException("modelo é obrigatório");
-        if (cor == null || cor.isBlank()) throw new IllegalArgumentException("cor é obrigatória");
-        if (preco == null || preco.signum() <= 0) throw new IllegalArgumentException("preço deve ser > 0");
+        if (marca == null) throw new DomainValidationException("marca", "marca é obrigatória");
+        if (modelo == null || modelo.isBlank()) throw new DomainValidationException("modelo", "modelo é obrigatório");
+        if (cor == null || cor.isBlank()) throw new DomainValidationException("cor", "cor é obrigatória");
+        if (preco == null || preco.signum() <= 0) throw new DomainValidationException("preco", "preço deve ser > 0");
 
         int anoAtual = Year.now().getValue();
         if (ano < 1886 || ano > anoAtual + 1) {
-            throw new IllegalArgumentException("ano inválido: " + ano);
+            throw new DomainValidationException("ano", "ano inválido: " + ano);
         }
 
         return new Veiculo(
