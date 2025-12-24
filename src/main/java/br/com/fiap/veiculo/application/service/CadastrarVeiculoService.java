@@ -19,7 +19,7 @@ public class CadastrarVeiculoService implements CadastrarVeiculoUseCase {
     @Override
     public UUID executar(CadastrarVeiculoCommand command) {
 
-        Veiculo veiculo = VeiculoFactory.novo(
+        Veiculo veiculo = VeiculoFactory.novoCadastro(
                 command.marca(),
                 command.modelo(),
                 command.ano(),
