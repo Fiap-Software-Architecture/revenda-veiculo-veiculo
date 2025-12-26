@@ -39,11 +39,4 @@ public class Placa {
         return value;
     }
 
-
-
-
-
-
-
-
 }

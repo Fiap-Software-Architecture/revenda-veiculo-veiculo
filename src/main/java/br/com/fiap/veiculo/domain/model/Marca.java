@@ -9,7 +9,8 @@ public enum Marca {
     HONDA,
     FORD,
     CHEVROLET,
-    VOLKSWAGEN;
+    VOLKSWAGEN,
+    FIAT;
 
     public static Marca from(String raw) {
         if (raw == null) {
