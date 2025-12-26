@@ -1,6 +1,7 @@
 package br.com.fiap.veiculo.infrastructure.adapter.input.rest.exception;
 
 import br.com.fiap.veiculo.domain.exception.DomainValidationException;
+import br.com.fiap.veiculo.domain.exception.PlacaJaCadastradaException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,6 +77,21 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(PlacaJaCadastradaException.class)
+    public ResponseEntity<ApiErrorResponse> handle(
+            PlacaJaCadastradaException ex,
+            HttpServletRequest request)
+    {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiErrorResponse(
+                        Instant.now(),
+                        HttpStatus.CONFLICT.value(),
+                        HttpStatus.CONFLICT.getReasonPhrase(),
+                        ex.getMessage(),
+                        request.getRequestURI(),
+                        List.of()));
     }
 
     private ApiErrorResponse.FieldErrorItem toFieldErrorItem(FieldError fe) {

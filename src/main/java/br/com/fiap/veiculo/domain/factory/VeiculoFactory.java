@@ -2,6 +2,7 @@ package br.com.fiap.veiculo.domain.factory;
 
 import br.com.fiap.veiculo.domain.exception.DomainValidationException;
 import br.com.fiap.veiculo.domain.model.Marca;
+import br.com.fiap.veiculo.domain.model.Placa;
 import br.com.fiap.veiculo.domain.model.StatusVeiculo;
 import br.com.fiap.veiculo.domain.model.Veiculo;
 
@@ -11,8 +12,9 @@ import java.util.UUID;
 
 public class VeiculoFactory {
 
-    public static Veiculo novoCadastro(Marca marca, String modelo, Integer ano, String cor, BigDecimal preco) {
+    public static Veiculo novoCadastro(Placa placa, Marca marca, String modelo, Integer ano, String cor, BigDecimal preco) {
 
+        if (placa == null) throw new DomainValidationException("placa", "placa é obrigatória");
         if (marca == null) throw new DomainValidationException("marca", "marca é obrigatória");
         if (modelo == null || modelo.isBlank()) throw new DomainValidationException("modelo", "modelo é obrigatório");
         if (cor == null || cor.isBlank()) throw new DomainValidationException("cor", "cor é obrigatória");
@@ -25,6 +27,7 @@ public class VeiculoFactory {
 
         return new Veiculo(
                 UUID.randomUUID(),
+                placa,
                 marca,
                 modelo,
                 ano,

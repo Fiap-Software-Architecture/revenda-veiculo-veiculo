@@ -11,6 +11,7 @@ import java.util.UUID;
 public class Veiculo {
 
     private final UUID id;
+    private final Placa placa;
     private final Marca marca;
     private final String modelo;
     private final int ano;

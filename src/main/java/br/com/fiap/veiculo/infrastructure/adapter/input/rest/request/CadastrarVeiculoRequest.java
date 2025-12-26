@@ -2,6 +2,7 @@ package br.com.fiap.veiculo.infrastructure.adapter.input.rest.request;
 
 import br.com.fiap.veiculo.application.dto.CadastrarVeiculoCommand;
 import br.com.fiap.veiculo.domain.model.Marca;
+import br.com.fiap.veiculo.domain.model.Placa;
 import br.com.fiap.veiculo.infrastructure.adapter.input.rest.validation.MarcaValida;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -12,6 +13,9 @@ import java.math.BigDecimal;
 
 @Data
 public class CadastrarVeiculoRequest {
+
+    @NotBlank
+    private String placa;
 
     @NotBlank
     @MarcaValida
@@ -31,7 +35,7 @@ public class CadastrarVeiculoRequest {
 
     public CadastrarVeiculoCommand toCommand() {
         return new CadastrarVeiculoCommand(
-                Marca.from(marca), modelo, ano, cor, preco
+                new Placa(placa), Marca.from(marca.toUpperCase()), modelo, ano, cor, preco
         );
     }
 

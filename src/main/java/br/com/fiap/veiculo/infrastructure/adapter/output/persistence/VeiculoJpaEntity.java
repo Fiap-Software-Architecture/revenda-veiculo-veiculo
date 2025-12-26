@@ -1,8 +1,10 @@
 package br.com.fiap.veiculo.infrastructure.adapter.output.persistence;
 
 import br.com.fiap.veiculo.domain.model.Marca;
+import br.com.fiap.veiculo.domain.model.Placa;
 import br.com.fiap.veiculo.domain.model.StatusVeiculo;
 import br.com.fiap.veiculo.domain.model.Veiculo;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -18,6 +20,9 @@ public class VeiculoJpaEntity {
 
     @Id
     private UUID id;
+
+    @Column(name = "placa", nullable = false, unique = true)
+    private String placa;
 
     @Enumerated(EnumType.STRING)
     private Marca marca;
@@ -36,6 +41,7 @@ public class VeiculoJpaEntity {
     public static VeiculoJpaEntity fromDomain(Veiculo veiculo) {
         VeiculoJpaEntity entity = new VeiculoJpaEntity();
         entity.id = veiculo.getId();
+        entity.placa = veiculo.getPlaca().getValue();
         entity.marca = veiculo.getMarca();
         entity.modelo = veiculo.getModelo();
         entity.ano = veiculo.getAno();
@@ -48,6 +54,7 @@ public class VeiculoJpaEntity {
     public Veiculo toDomain() {
         return new Veiculo(
                 this.id,
+                new Placa(this.placa),
                 this.marca,
                 this.modelo,
                 this.ano,
