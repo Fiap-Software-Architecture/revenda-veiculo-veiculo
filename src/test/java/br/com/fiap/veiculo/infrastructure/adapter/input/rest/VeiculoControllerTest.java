@@ -4,6 +4,7 @@ import br.com.fiap.veiculo.application.dto.AtualizarVeiculoCommand;
 import br.com.fiap.veiculo.application.dto.CadastrarVeiculoCommand;
 import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
+import br.com.fiap.veiculo.application.port.input.ListarVeiculosUseCase;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,10 @@ class VeiculoControllerTest {
 
     @MockitoBean
     private CadastrarVeiculoUseCase cadastrarVeiculoUseCase;
-
     @MockitoBean
     private AtualizarVeiculoUseCase alterarVeiculoUseCase;
+    @MockitoBean
+    private ListarVeiculosUseCase listarVeiculoUseCase;
 
     @Test
     void cadastrar_deveRetornar201ComJsonId() throws Exception {

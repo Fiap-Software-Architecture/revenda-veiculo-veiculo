@@ -2,9 +2,11 @@ package br.com.fiap.veiculo.infrastructure.adapter.output.persistence;
 
 import br.com.fiap.veiculo.application.port.output.VeiculoRepositoryPort;
 import br.com.fiap.veiculo.domain.model.Placa;
+import br.com.fiap.veiculo.domain.model.StatusVeiculo;
 import br.com.fiap.veiculo.domain.model.Veiculo;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,6 +40,23 @@ public class VeiculoPersistenceAdapter implements VeiculoRepositoryPort {
         VeiculoJpaEntity entitySalva = repository.save(entity);
         return entitySalva.toDomain();
     }
-    
+
+    @Override
+    public List<Veiculo> listarOrdenadoPorPreco() {
+        return repository.findAllByOrderByPrecoAsc()
+                .stream()
+                .map(VeiculoJpaEntity::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Veiculo> listarPorStatusOrdenadoPorPreco(StatusVeiculo status) {
+        return repository.findByStatusOrderByPrecoAsc(status)
+                .stream()
+                .map(VeiculoJpaEntity::toDomain)
+                .toList();
+    }
+
+
 }
 
