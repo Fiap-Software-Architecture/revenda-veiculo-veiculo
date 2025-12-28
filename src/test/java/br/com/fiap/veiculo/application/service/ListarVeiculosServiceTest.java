@@ -29,7 +29,7 @@ class ListarVeiculosServiceTest {
     private ListarVeiculosService service;
 
     @Test
-    void deveListarTodosOrdenadosPorPrecoQuandoStatusNaoInformado() {
+    void deveExecutarTodosOrdenadosPorPrecoQuandoStatusNaoInformado() {
         // arrange
         Veiculo v1 = new Veiculo(
                 UUID.fromString("11111111-1111-1111-1111-111111111111"),
@@ -57,7 +57,7 @@ class ListarVeiculosServiceTest {
         when(repository.listarOrdenadoPorPreco()).thenReturn(esperado);
 
         // act
-        List<Veiculo> resultado = service.listar(Optional.empty());
+        List<Veiculo> resultado = service.executar(Optional.empty());
 
         // assert
         assertEquals(esperado, resultado);
@@ -68,7 +68,7 @@ class ListarVeiculosServiceTest {
     }
 
     @Test
-    void deveListarFiltrandoPorStatusQuandoStatusInformado() {
+    void deveExecutarFiltrandoPorStatusQuandoStatusInformado() {
         // arrange
         StatusVeiculo status = StatusVeiculo.DISPONIVEL;
 
@@ -87,7 +87,7 @@ class ListarVeiculosServiceTest {
         when(repository.listarPorStatusOrdenadoPorPreco(status)).thenReturn(esperado);
 
         // act
-        List<Veiculo> resultado = service.listar(Optional.of(status));
+        List<Veiculo> resultado = service.executar(Optional.of(status));
 
         // assert
         assertEquals(esperado, resultado);

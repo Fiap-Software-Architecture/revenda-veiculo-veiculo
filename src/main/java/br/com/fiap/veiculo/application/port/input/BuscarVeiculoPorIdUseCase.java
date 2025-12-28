@@ -6,6 +6,6 @@ import java.util.UUID;
 
 public interface BuscarVeiculoPorIdUseCase {
 
-    Veiculo buscarPorId(UUID id);
+    Veiculo executar(UUID id);
 
 }

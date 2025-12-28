@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ListarVeiculosUseCase {
-    List<Veiculo> listar(Optional<StatusVeiculo> status);
+
+    List<Veiculo> executar(Optional<StatusVeiculo> status);
+
 }
 

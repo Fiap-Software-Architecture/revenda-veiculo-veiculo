@@ -216,7 +216,7 @@ class VeiculoControllerTest {
                 StatusVeiculo.DISPONIVEL
         );
 
-        when(buscarVeiculoPorIdUseCase.buscarPorId(id))
+        when(buscarVeiculoPorIdUseCase.executar(id))
                 .thenReturn(veiculo);
 
         // act + assert
@@ -232,7 +232,7 @@ class VeiculoControllerTest {
                 .andExpect(jsonPath("$.preco").value(10000.00))
                 .andExpect(jsonPath("$.status").value("DISPONIVEL"));
 
-        verify(buscarVeiculoPorIdUseCase, times(1)).buscarPorId(id);
+        verify(buscarVeiculoPorIdUseCase, times(1)).executar(id);
         verifyNoMoreInteractions(buscarVeiculoPorIdUseCase);
     }
 
@@ -241,7 +241,7 @@ class VeiculoControllerTest {
         // arrange
         UUID id = UUID.fromString("88888888-8888-8888-8888-888888888888");
 
-        when(buscarVeiculoPorIdUseCase.buscarPorId(id))
+        when(buscarVeiculoPorIdUseCase.executar(id))
                 .thenThrow(new VeiculoNaoEncontradoException(id));
 
         // act + assert
@@ -253,7 +253,7 @@ class VeiculoControllerTest {
                 .andExpect(jsonPath("$.message").value("Veículo não encontrado. id=" + id))
                 .andExpect(jsonPath("$.path").value("/veiculos/" + id));
 
-        verify(buscarVeiculoPorIdUseCase, times(1)).buscarPorId(id);
+        verify(buscarVeiculoPorIdUseCase, times(1)).executar(id);
         verifyNoMoreInteractions(buscarVeiculoPorIdUseCase);
     }
 
@@ -282,7 +282,7 @@ class VeiculoControllerTest {
                 StatusVeiculo.VENDIDO
         );
 
-        when(listarVeiculosUseCase.listar(eq(Optional.empty())))
+        when(listarVeiculosUseCase.executar(eq(Optional.empty())))
                 .thenReturn(List.of(v1, v2));
 
         // act + assert
@@ -305,7 +305,7 @@ class VeiculoControllerTest {
                 .andExpect(jsonPath("$[1].preco").value(20000.00))
                 .andExpect(jsonPath("$[1].status").value(v2.getStatus().name()));
 
-        verify(listarVeiculosUseCase, times(1)).listar(eq(Optional.empty()));
+        verify(listarVeiculosUseCase, times(1)).executar(eq(Optional.empty()));
         verifyNoMoreInteractions(listarVeiculosUseCase);
     }
 
@@ -323,7 +323,7 @@ class VeiculoControllerTest {
                 StatusVeiculo.DISPONIVEL
         );
 
-        when(listarVeiculosUseCase.listar(eq(Optional.of(StatusVeiculo.DISPONIVEL))))
+        when(listarVeiculosUseCase.executar(eq(Optional.of(StatusVeiculo.DISPONIVEL))))
                 .thenReturn(List.of(v1));
 
         // act + assert
@@ -334,7 +334,7 @@ class VeiculoControllerTest {
                 .andExpect(jsonPath("$[0].id").value(v1.getId().toString()))
                 .andExpect(jsonPath("$[0].status").value("DISPONIVEL"));
 
-        verify(listarVeiculosUseCase, times(1)).listar(eq(Optional.of(StatusVeiculo.DISPONIVEL)));
+        verify(listarVeiculosUseCase, times(1)).executar(eq(Optional.of(StatusVeiculo.DISPONIVEL)));
         verifyNoMoreInteractions(listarVeiculosUseCase);
     }
 
