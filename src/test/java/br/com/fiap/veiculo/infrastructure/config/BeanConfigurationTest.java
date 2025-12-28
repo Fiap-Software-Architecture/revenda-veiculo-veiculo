@@ -2,65 +2,43 @@ package br.com.fiap.veiculo.infrastructure.config;
 
 import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
+import br.com.fiap.veiculo.application.port.input.ListarVeiculosUseCase;
 import br.com.fiap.veiculo.application.port.output.VeiculoRepositoryPort;
-import br.com.fiap.veiculo.application.service.AtualizarVeiculoService;
-import br.com.fiap.veiculo.application.service.CadastrarVeiculoService;
+import br.com.fiap.veiculo.domain.factory.VeiculoFactory;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = BeanConfiguration.class)
 class BeanConfigurationTest {
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @MockitoBean
-    private VeiculoRepositoryPort repositoryPort;
+    private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+            .withUserConfiguration(BeanConfiguration.class)
+            .withBean(VeiculoRepositoryPort.class, () -> mock(VeiculoRepositoryPort.class))
+            .withBean(VeiculoFactory.class, () -> mock(VeiculoFactory.class));
 
     @Test
     void deveCriarBeanCadastrarVeiculoUseCase() {
-        CadastrarVeiculoUseCase useCase =
-                applicationContext.getBean(CadastrarVeiculoUseCase.class);
-
-        assertNotNull(useCase);
-        assertInstanceOf(CadastrarVeiculoService.class, useCase);
-    }
-
-    @Test
-    void deveInjetarRepositorioNoUseCase() {
-        CadastrarVeiculoUseCase useCase =
-                applicationContext.getBean(CadastrarVeiculoUseCase.class);
-
-        assertNotNull(useCase);
-
-        assertInstanceOf(CadastrarVeiculoService.class, useCase);
+        contextRunner.run(context -> {
+            assertThat(context).hasSingleBean(CadastrarVeiculoUseCase.class);
+            assertThat(context.getBean(CadastrarVeiculoUseCase.class)).isNotNull();
+        });
     }
 
     @Test
     void deveCriarBeanAtualizarVeiculoUseCase() {
-        AtualizarVeiculoUseCase useCase =
-                applicationContext.getBean(AtualizarVeiculoUseCase.class);
-
-        assertNotNull(useCase);
-        assertInstanceOf(AtualizarVeiculoService.class, useCase);
+        contextRunner.run(context -> {
+            assertThat(context).hasSingleBean(AtualizarVeiculoUseCase.class);
+            assertThat(context.getBean(AtualizarVeiculoUseCase.class)).isNotNull();
+        });
     }
 
     @Test
-    void deveInjetarRepositorioNoAtualizarUseCase() {
-        AtualizarVeiculoUseCase useCase =
-                applicationContext.getBean(AtualizarVeiculoUseCase.class);
-
-        assertNotNull(useCase);
-
-        assertInstanceOf(AtualizarVeiculoService.class, useCase);
+    void deveCriarBeanListarVeiculosUseCase() {
+        contextRunner.run(context -> {
+            assertThat(context).hasSingleBean(ListarVeiculosUseCase.class);
+            assertThat(context.getBean(ListarVeiculosUseCase.class)).isNotNull();
+        });
     }
-
 }

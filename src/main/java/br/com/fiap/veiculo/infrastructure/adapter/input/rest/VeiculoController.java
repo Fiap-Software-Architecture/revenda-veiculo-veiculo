@@ -9,6 +9,7 @@ import br.com.fiap.veiculo.infrastructure.adapter.input.rest.request.AtualizarVe
 import br.com.fiap.veiculo.infrastructure.adapter.input.rest.request.CadastrarVeiculoRequest;
 import br.com.fiap.veiculo.infrastructure.adapter.input.rest.response.CadastrarVeiculoResponse;
 import br.com.fiap.veiculo.infrastructure.adapter.input.rest.response.VeiculoResponse;
+import br.com.fiap.veiculo.infrastructure.adapter.input.rest.validation.StatusVeiculoValida;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,26 +46,28 @@ public class VeiculoController {
 
     @GetMapping
     public ResponseEntity<List<VeiculoResponse>> listar(
-            @RequestParam(required = false) StatusVeiculo status
+            @RequestParam(required = false) @StatusVeiculoValida String status
     ) {
-        var veiculos = listarVeiculos.listar(Optional.ofNullable(status));
+        Optional<StatusVeiculo> statusOptional = Optional.ofNullable(normalizarEnumParam(status))
+                .map(StatusVeiculo::valueOf);
 
-        var response = veiculos.stream()
-                .map(this::toResponse)
+        List<Veiculo> veiculos = listarVeiculos.listar(statusOptional);
+        List<VeiculoResponse> response = veiculos.stream()
+                .map(VeiculoResponse::fromDomain)
                 .toList();
 
         return ResponseEntity.ok(response);
     }
 
-    private VeiculoResponse toResponse(Veiculo veiculo) {
-        return new VeiculoResponse(
-                veiculo.getId(),
-                veiculo.getPlaca().getValue(),
-                veiculo.getMarca().name(),
-                veiculo.getModelo(),
-                veiculo.getPreco(),
-                veiculo.getStatus()
-        );
+    private String normalizarEnumParam(String value) {
+        if (value == null) return null;
+
+        String v = value.trim();
+        if (v.startsWith("\"") && v.endsWith("\"") && v.length() >= 2) {
+            v = v.substring(1, v.length() - 1);
+        }
+
+        return v.toUpperCase();
     }
 
     @PostMapping

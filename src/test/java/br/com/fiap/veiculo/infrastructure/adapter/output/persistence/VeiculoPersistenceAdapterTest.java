@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -164,6 +165,211 @@ class VeiculoPersistenceAdapterTest {
         // assert
         assertTrue(result.isEmpty());
         verify(repositoryJpa, times(1)).findById(id);
+        verifyNoMoreInteractions(repositoryJpa);
+    }
+
+    @Test
+    void listarOrdenadoPorPreco_deveDelegarParaRepositoryJpaEConverterParaDominio() {
+        // arrange
+        Veiculo veiculoMaisBarato = new Veiculo(
+                UUID.fromString("44444444-4444-4444-4444-444444444444"),
+                new Placa("AAA1A11"),
+                Marca.FIAT,
+                "Uno",
+                2020,
+                "Branco",
+                new BigDecimal("10000.00"),
+                StatusVeiculo.DISPONIVEL
+        );
+
+        Veiculo veiculoMaisCaro = new Veiculo(
+                UUID.fromString("55555555-5555-5555-5555-555555555555"),
+                new Placa("BBB2B22"),
+                Marca.FORD,
+                "Ka",
+                2019,
+                "Preto",
+                new BigDecimal("20000.00"),
+                StatusVeiculo.VENDIDO
+        );
+
+        // O adapter confia na ordenação vinda do repository
+        List<VeiculoJpaEntity> entitiesOrdenadas = List.of(
+                VeiculoJpaEntity.fromDomain(veiculoMaisBarato),
+                VeiculoJpaEntity.fromDomain(veiculoMaisCaro)
+        );
+
+        when(repositoryJpa.findAllByOrderByPrecoAsc()).thenReturn(entitiesOrdenadas);
+
+        // act
+        List<Veiculo> result = adapter.listarOrdenadoPorPreco();
+
+        // assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+
+        assertEquals(veiculoMaisBarato.getId(), result.getFirst().getId());
+        assertEquals(veiculoMaisBarato.getPlaca(), result.getFirst().getPlaca());
+        assertEquals(veiculoMaisBarato.getPreco(), result.getFirst().getPreco());
+
+        assertEquals(veiculoMaisCaro.getId(), result.get(1).getId());
+        assertEquals(veiculoMaisCaro.getPlaca(), result.get(1).getPlaca());
+        assertEquals(veiculoMaisCaro.getPreco(), result.get(1).getPreco());
+
+        verify(repositoryJpa, times(1)).findAllByOrderByPrecoAsc();
+        verify(repositoryJpa, never()).findByStatusOrderByPrecoAsc(any());
+        verifyNoMoreInteractions(repositoryJpa);
+    }
+
+    @Test
+    void listarPorStatusOrdenadoPorPreco_deveDelegarParaRepositoryJpaEConverterParaDominio() {
+        // arrange
+        StatusVeiculo status = StatusVeiculo.DISPONIVEL;
+
+        Veiculo v1 = new Veiculo(
+                UUID.fromString("66666666-6666-6666-6666-666666666666"),
+                new Placa("CCC3C33"),
+                Marca.FIAT,
+                "Mobi",
+                2021,
+                "Prata",
+                new BigDecimal("15000.00"),
+                status
+        );
+
+        Veiculo v2 = new Veiculo(
+                UUID.fromString("77777777-7777-7777-7777-777777777777"),
+                new Placa("DDD4D44"),
+                Marca.FIAT,
+                "Argo",
+                2022,
+                "Vermelho",
+                new BigDecimal("18000.00"),
+                status
+        );
+
+        List<VeiculoJpaEntity> entitiesOrdenadas = List.of(
+                VeiculoJpaEntity.fromDomain(v1),
+                VeiculoJpaEntity.fromDomain(v2)
+        );
+
+        when(repositoryJpa.findByStatusOrderByPrecoAsc(status)).thenReturn(entitiesOrdenadas);
+
+        // act
+        List<Veiculo> result = adapter.listarPorStatusOrdenadoPorPreco(status);
+
+        // assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+
+        assertEquals(v1.getId(), result.getFirst().getId());
+        assertEquals(v1.getStatus(), result.getFirst().getStatus());
+        assertEquals(v1.getPreco(), result.getFirst().getPreco());
+
+        assertEquals(v2.getId(), result.get(1).getId());
+        assertEquals(v2.getStatus(), result.get(1).getStatus());
+        assertEquals(v2.getPreco(), result.get(1).getPreco());
+
+        verify(repositoryJpa, times(1)).findByStatusOrderByPrecoAsc(status);
+        verify(repositoryJpa, never()).findAllByOrderByPrecoAsc();
+        verifyNoMoreInteractions(repositoryJpa);
+    }
+
+    @Test
+    void listarOrdenadoPorPreco_deveDelegarParaRepositoryEConverterParaDominio() {
+        // arrange
+        Veiculo vMaisBarato = new Veiculo(
+                UUID.fromString("44444444-4444-4444-4444-444444444444"),
+                new Placa("AAA1A11"),
+                Marca.FIAT,
+                "Uno",
+                2019,
+                "Branco",
+                new BigDecimal("10000.00"),
+                StatusVeiculo.DISPONIVEL
+        );
+
+        Veiculo vMaisCaro = new Veiculo(
+                UUID.fromString("55555555-5555-5555-5555-555555555555"),
+                new Placa("BBB2B22"),
+                Marca.FORD,
+                "Ka",
+                2020,
+                "Preto",
+                new BigDecimal("20000.00"),
+                StatusVeiculo.VENDIDO
+        );
+
+        List<VeiculoJpaEntity> entities = List.of(
+                VeiculoJpaEntity.fromDomain(vMaisBarato),
+                VeiculoJpaEntity.fromDomain(vMaisCaro)
+        );
+
+        when(repositoryJpa.findAllByOrderByPrecoAsc()).thenReturn(entities);
+
+        // act
+        List<Veiculo> result = adapter.listarOrdenadoPorPreco();
+
+        // assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+
+        // A ordenação deve ser preservada conforme retorno do repository
+        assertEquals(vMaisBarato.getId(), result.get(0).getId());
+        assertEquals(vMaisBarato.getPreco(), result.get(0).getPreco());
+        assertEquals(vMaisCaro.getId(), result.get(1).getId());
+        assertEquals(vMaisCaro.getPreco(), result.get(1).getPreco());
+
+        verify(repositoryJpa, times(1)).findAllByOrderByPrecoAsc();
+        verifyNoMoreInteractions(repositoryJpa);
+    }
+
+    @Test
+    void listarPorStatusOrdenadoPorPreco_deveDelegarParaRepositoryEConverterParaDominio() {
+        // arrange
+        StatusVeiculo status = StatusVeiculo.DISPONIVEL;
+
+        Veiculo v1 = new Veiculo(
+                UUID.fromString("66666666-6666-6666-6666-666666666666"),
+                new Placa("CCC3C33"),
+                Marca.FIAT,
+                "Argo",
+                2021,
+                "Vermelho",
+                new BigDecimal("15000.00"),
+                status
+        );
+
+        Veiculo v2 = new Veiculo(
+                UUID.fromString("77777777-7777-7777-7777-777777777777"),
+                new Placa("DDD4D44"),
+                Marca.FIAT,
+                "Pulse",
+                2022,
+                "Azul",
+                new BigDecimal("18000.00"),
+                status
+        );
+
+        List<VeiculoJpaEntity> entities = List.of(
+                VeiculoJpaEntity.fromDomain(v1),
+                VeiculoJpaEntity.fromDomain(v2)
+        );
+
+        when(repositoryJpa.findByStatusOrderByPrecoAsc(status)).thenReturn(entities);
+
+        // act
+        List<Veiculo> result = adapter.listarPorStatusOrdenadoPorPreco(status);
+
+        // assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(v1.getId(), result.get(0).getId());
+        assertEquals(v1.getStatus(), result.get(0).getStatus());
+        assertEquals(v2.getId(), result.get(1).getId());
+        assertEquals(v2.getStatus(), result.get(1).getStatus());
+
+        verify(repositoryJpa, times(1)).findByStatusOrderByPrecoAsc(status);
         verifyNoMoreInteractions(repositoryJpa);
     }
 
