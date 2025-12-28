@@ -1,6 +1,7 @@
 package br.com.fiap.veiculo.infrastructure.config;
 
 import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
+import br.com.fiap.veiculo.application.port.input.BuscarVeiculoPorIdUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.ListarVeiculosUseCase;
 import br.com.fiap.veiculo.application.port.output.VeiculoRepositoryPort;
@@ -41,4 +42,13 @@ class BeanConfigurationTest {
             assertThat(context.getBean(ListarVeiculosUseCase.class)).isNotNull();
         });
     }
+
+    @Test
+    void deveCriarBeanBuscarVeiculoPorIdUseCase() {
+        contextRunner.run(context -> {
+            assertThat(context).hasSingleBean(BuscarVeiculoPorIdUseCase.class);
+            assertThat(context.getBean(BuscarVeiculoPorIdUseCase.class)).isNotNull();
+        });
+    }
+
 }
