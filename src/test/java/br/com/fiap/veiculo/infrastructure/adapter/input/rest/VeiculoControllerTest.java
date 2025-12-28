@@ -6,6 +6,7 @@ import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.BuscarVeiculoPorIdUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.ListarVeiculosUseCase;
+import br.com.fiap.veiculo.application.port.input.RemoverVeiculoUseCase;
 import br.com.fiap.veiculo.domain.exception.VeiculoNaoEncontradoException;
 import br.com.fiap.veiculo.domain.model.Marca;
 import br.com.fiap.veiculo.domain.model.Placa;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -47,6 +49,8 @@ class VeiculoControllerTest {
     private CadastrarVeiculoUseCase cadastrarVeiculoUseCase;
     @MockitoBean
     private AtualizarVeiculoUseCase alterarVeiculoUseCase;
+    @MockitoBean
+    private RemoverVeiculoUseCase removerVeiculoUseCase;
 
     @Test
     void cadastrar_deveRetornar201ComJsonId() throws Exception {
@@ -343,5 +347,41 @@ class VeiculoControllerTest {
 
         verifyNoInteractions(listarVeiculosUseCase);
     }
+
+    @Test
+    void remover_deveRetornar204EChamarUseCase() throws Exception {
+        // arrange
+        UUID id = UUID.fromString("44444444-4444-4444-4444-444444444444");
+
+        // act + assert
+        mockMvc.perform(delete("/veiculos/{id}", id))
+                .andExpect(status().isNoContent())
+                .andExpect(content().string(""));
+
+        verify(removerVeiculoUseCase, times(1)).executar(id);
+        verifyNoMoreInteractions(removerVeiculoUseCase);
+    }
+
+    @Test
+    void remover_quandoNaoEncontrado_deveRetornar404() throws Exception {
+        // arrange
+        UUID id = UUID.fromString("55555555-5555-5555-5555-555555555555");
+
+        doThrow(new VeiculoNaoEncontradoException(id))
+                .when(removerVeiculoUseCase).executar(id);
+
+        // act + assert
+        mockMvc.perform(delete("/veiculos/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("Veículo não encontrado. id=" + id))
+                .andExpect(jsonPath("$.path").value("/veiculos/" + id));
+
+        verify(removerVeiculoUseCase, times(1)).executar(id);
+        verifyNoMoreInteractions(removerVeiculoUseCase);
+    }
+
 
 }

@@ -22,5 +22,6 @@ public interface VeiculoRepositoryPort {
 
     List<Veiculo> listarPorStatusOrdenadoPorPreco(StatusVeiculo status);
 
+    void removerPorId(UUID id);
 
 }

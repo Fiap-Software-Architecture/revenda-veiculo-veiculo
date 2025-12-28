@@ -58,5 +58,10 @@ public class VeiculoPersistenceAdapter implements VeiculoRepositoryPort {
                 .toList();
     }
 
+    @Override
+    public void removerPorId(UUID id) {
+        repository.deleteById(id);
+    }
+
 }
 
