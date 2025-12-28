@@ -2,9 +2,11 @@ package br.com.fiap.veiculo.infrastructure.config;
 
 import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
+import br.com.fiap.veiculo.application.port.input.ListarVeiculosUseCase;
 import br.com.fiap.veiculo.application.port.output.VeiculoRepositoryPort;
 import br.com.fiap.veiculo.application.service.AtualizarVeiculoService;
 import br.com.fiap.veiculo.application.service.CadastrarVeiculoService;
+import br.com.fiap.veiculo.application.service.ListarVeiculosService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,6 +25,13 @@ public class BeanConfiguration {
             VeiculoRepositoryPort repository
     ) {
         return new AtualizarVeiculoService(repository);
+    }
+
+    @Bean
+    ListarVeiculosUseCase listarVeiculosUseCase(
+            VeiculoRepositoryPort repository
+    ) {
+        return new ListarVeiculosService(repository);
     }
 
 }
