@@ -31,7 +31,8 @@ public class VeiculoPersistenceAdapter implements VeiculoRepositoryPort {
 
     @Override
     public Optional<Veiculo> buscarPorId(UUID id) {
-        return repository.findById(id).map(VeiculoJpaEntity::toDomain);
+        return repository.findById(id)
+                .map(VeiculoJpaEntity::toDomain);
     }
 
     @Override
@@ -56,7 +57,6 @@ public class VeiculoPersistenceAdapter implements VeiculoRepositoryPort {
                 .map(VeiculoJpaEntity::toDomain)
                 .toList();
     }
-
 
 }
 

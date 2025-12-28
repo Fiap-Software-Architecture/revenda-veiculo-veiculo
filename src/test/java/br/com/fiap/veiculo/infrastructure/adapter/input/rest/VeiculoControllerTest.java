@@ -3,6 +3,7 @@ package br.com.fiap.veiculo.infrastructure.adapter.input.rest;
 import br.com.fiap.veiculo.application.dto.AtualizarVeiculoCommand;
 import br.com.fiap.veiculo.application.dto.CadastrarVeiculoCommand;
 import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
+import br.com.fiap.veiculo.application.port.input.BuscarVeiculoPorIdUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.ListarVeiculosUseCase;
 import br.com.fiap.veiculo.domain.model.Marca;
@@ -38,11 +39,13 @@ class VeiculoControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
+    private BuscarVeiculoPorIdUseCase buscarVeiculoPorIdUseCase;
+    @MockitoBean
+    private ListarVeiculosUseCase listarVeiculosUseCase;
+    @MockitoBean
     private CadastrarVeiculoUseCase cadastrarVeiculoUseCase;
     @MockitoBean
     private AtualizarVeiculoUseCase alterarVeiculoUseCase;
-    @MockitoBean
-    private ListarVeiculosUseCase listarVeiculosUseCase;
 
     @Test
     void cadastrar_deveRetornar201ComJsonId() throws Exception {
