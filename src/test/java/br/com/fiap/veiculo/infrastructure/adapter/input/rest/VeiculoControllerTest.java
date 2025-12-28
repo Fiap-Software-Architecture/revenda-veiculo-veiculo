@@ -3,8 +3,10 @@ package br.com.fiap.veiculo.infrastructure.adapter.input.rest;
 import br.com.fiap.veiculo.application.dto.AtualizarVeiculoCommand;
 import br.com.fiap.veiculo.application.dto.CadastrarVeiculoCommand;
 import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
+import br.com.fiap.veiculo.application.port.input.BuscarVeiculoPorIdUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.ListarVeiculosUseCase;
+import br.com.fiap.veiculo.domain.exception.VeiculoNaoEncontradoException;
 import br.com.fiap.veiculo.domain.model.Marca;
 import br.com.fiap.veiculo.domain.model.Placa;
 import br.com.fiap.veiculo.domain.model.StatusVeiculo;
@@ -38,11 +40,13 @@ class VeiculoControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
+    private BuscarVeiculoPorIdUseCase buscarVeiculoPorIdUseCase;
+    @MockitoBean
+    private ListarVeiculosUseCase listarVeiculosUseCase;
+    @MockitoBean
     private CadastrarVeiculoUseCase cadastrarVeiculoUseCase;
     @MockitoBean
     private AtualizarVeiculoUseCase alterarVeiculoUseCase;
-    @MockitoBean
-    private ListarVeiculosUseCase listarVeiculosUseCase;
 
     @Test
     void cadastrar_deveRetornar201ComJsonId() throws Exception {
@@ -190,6 +194,63 @@ class VeiculoControllerTest {
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(alterarVeiculoUseCase);
+    }
+
+    @Test
+    void buscarPorId_deveRetornar200ComVeiculo() throws Exception {
+        // arrange
+        UUID id = UUID.fromString("99999999-9999-9999-9999-999999999999");
+
+        Veiculo veiculo = new Veiculo(
+                id,
+                new Placa("ABC1D23"),
+                Marca.FIAT,
+                "Uno",
+                2020,
+                "Branco",
+                new BigDecimal("10000.00"),
+                StatusVeiculo.DISPONIVEL
+        );
+
+        when(buscarVeiculoPorIdUseCase.buscarPorId(id))
+                .thenReturn(veiculo);
+
+        // act + assert
+        mockMvc.perform(get("/veiculos/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(id.toString()))
+                .andExpect(jsonPath("$.placa").value("ABC1D23"))
+                .andExpect(jsonPath("$.marca").value("FIAT"))
+                .andExpect(jsonPath("$.modelo").value("Uno"))
+                .andExpect(jsonPath("$.ano").value(2020))
+                .andExpect(jsonPath("$.cor").value("Branco"))
+                .andExpect(jsonPath("$.preco").value(10000.00))
+                .andExpect(jsonPath("$.status").value("DISPONIVEL"));
+
+        verify(buscarVeiculoPorIdUseCase, times(1)).buscarPorId(id);
+        verifyNoMoreInteractions(buscarVeiculoPorIdUseCase);
+    }
+
+    @Test
+    void buscarPorId_quandoNaoEncontrado_deveRetornar404() throws Exception {
+        // arrange
+        UUID id = UUID.fromString("88888888-8888-8888-8888-888888888888");
+
+        when(buscarVeiculoPorIdUseCase.buscarPorId(id))
+                .thenThrow(new VeiculoNaoEncontradoException(id));
+
+        // act + assert
+        mockMvc.perform(get("/veiculos/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("Veículo não encontrado. id=" + id))
+                .andExpect(jsonPath("$.path").value("/veiculos/" + id));
+
+        verify(buscarVeiculoPorIdUseCase, times(1)).buscarPorId(id);
+        verifyNoMoreInteractions(buscarVeiculoPorIdUseCase);
     }
 
     @Test
