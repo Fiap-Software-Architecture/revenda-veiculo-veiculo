@@ -373,6 +373,20 @@ class VeiculoPersistenceAdapterTest {
         verifyNoMoreInteractions(repositoryJpa);
     }
 
+    @Test
+    void removerPorId_deveDelegarParaRepositoryJpa() {
+        // arrange
+        UUID id = UUID.fromString("99999999-9999-9999-9999-999999999999");
+
+        // act
+        adapter.removerPorId(id);
+
+        // assert
+        verify(repositoryJpa, times(1)).deleteById(id);
+        verifyNoMoreInteractions(repositoryJpa);
+    }
+
+
     private static Object getField(Object target, String fieldName) {
         try {
             var field = target.getClass().getDeclaredField(fieldName);

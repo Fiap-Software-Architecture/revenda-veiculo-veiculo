@@ -4,6 +4,7 @@ import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.BuscarVeiculoPorIdUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.ListarVeiculosUseCase;
+import br.com.fiap.veiculo.application.port.input.RemoverVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.output.VeiculoRepositoryPort;
 import br.com.fiap.veiculo.domain.factory.VeiculoFactory;
 import org.junit.jupiter.api.Test;
@@ -50,5 +51,14 @@ class BeanConfigurationTest {
             assertThat(context.getBean(BuscarVeiculoPorIdUseCase.class)).isNotNull();
         });
     }
+
+    @Test
+    void deveCriarBeanRemoverVeiculoUseCase() {
+        contextRunner.run(context -> {
+            assertThat(context).hasSingleBean(RemoverVeiculoUseCase.class);
+            assertThat(context.getBean(RemoverVeiculoUseCase.class)).isNotNull();
+        });
+    }
+
 
 }
