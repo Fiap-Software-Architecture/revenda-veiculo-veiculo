@@ -42,8 +42,10 @@ public class VeiculoController {
     private final RemoverVeiculoUseCase removerVeiculo;
 
     @GetMapping("/{id}")
-    public ResponseEntity<VeiculoResponse> buscarPorId(@PathVariable UUID id) {
-        var veiculo = buscarVeiculoPorId.buscarPorId(id);
+    public ResponseEntity<VeiculoResponse> buscarPorId(
+            @PathVariable UUID id
+    ) {
+        var veiculo = buscarVeiculoPorId.executar(id);
         return ResponseEntity.ok(VeiculoResponse.fromDomain(veiculo));
     }
 
@@ -54,7 +56,7 @@ public class VeiculoController {
         Optional<StatusVeiculo> statusOptional = Optional.ofNullable(status)
                 .map(StatusVeiculo::valueOf);
 
-        List<Veiculo> veiculos = listarVeiculos.listar(statusOptional);
+        List<Veiculo> veiculos = listarVeiculos.executar(statusOptional);
         List<VeiculoResponse> response = veiculos.stream()
                 .map(VeiculoResponse::fromDomain)
                 .toList();
@@ -82,7 +84,9 @@ public class VeiculoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remover(@PathVariable UUID id) {
+    public ResponseEntity<Void> remover(
+            @PathVariable UUID id
+    ) {
         removerVeiculo.executar(id);
         return ResponseEntity.noContent().build();
     }

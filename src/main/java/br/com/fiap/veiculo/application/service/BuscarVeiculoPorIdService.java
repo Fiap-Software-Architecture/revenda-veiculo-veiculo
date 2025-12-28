@@ -14,7 +14,7 @@ public class BuscarVeiculoPorIdService implements BuscarVeiculoPorIdUseCase {
     private final VeiculoRepositoryPort repository;
 
     @Override
-    public Veiculo buscarPorId(UUID id) {
+    public Veiculo executar(UUID id) {
         return repository.buscarPorId(id)
                 .orElseThrow(() -> new VeiculoNaoEncontradoException(id));
     }

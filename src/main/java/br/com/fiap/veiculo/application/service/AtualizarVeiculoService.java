@@ -7,16 +7,14 @@ import br.com.fiap.veiculo.domain.exception.PlacaJaCadastradaException;
 import br.com.fiap.veiculo.domain.exception.VeiculoNaoEncontradoException;
 import br.com.fiap.veiculo.domain.factory.VeiculoFactory;
 import br.com.fiap.veiculo.domain.model.Veiculo;
+import lombok.AllArgsConstructor;
 
 import java.util.UUID;
 
+@AllArgsConstructor
 public class AtualizarVeiculoService implements AtualizarVeiculoUseCase {
 
     private final VeiculoRepositoryPort repository;
-
-    public AtualizarVeiculoService(VeiculoRepositoryPort repository) {
-        this.repository = repository;
-    }
 
     @Override
     public void executar(AtualizarVeiculoCommand command) {

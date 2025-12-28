@@ -48,7 +48,7 @@ class BuscarVeiculoPorIdServiceTest {
                 .thenReturn(Optional.of(veiculo));
 
         // act
-        Veiculo resultado = service.buscarPorId(id);
+        Veiculo resultado = service.executar(id);
 
         // assert
         assertNotNull(resultado);
@@ -67,7 +67,7 @@ class BuscarVeiculoPorIdServiceTest {
                 .thenReturn(Optional.empty());
 
         // act + assert
-        assertThrows(VeiculoNaoEncontradoException.class, () -> service.buscarPorId(id));
+        assertThrows(VeiculoNaoEncontradoException.class, () -> service.executar(id));
 
         verify(repository, times(1)).buscarPorId(id);
         verifyNoMoreInteractions(repository);

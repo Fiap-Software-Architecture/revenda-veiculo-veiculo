@@ -6,16 +6,14 @@ import br.com.fiap.veiculo.application.port.output.VeiculoRepositoryPort;
 import br.com.fiap.veiculo.domain.exception.PlacaJaCadastradaException;
 import br.com.fiap.veiculo.domain.factory.VeiculoFactory;
 import br.com.fiap.veiculo.domain.model.Veiculo;
+import lombok.AllArgsConstructor;
 
 import java.util.UUID;
 
+@AllArgsConstructor
 public class CadastrarVeiculoService implements CadastrarVeiculoUseCase {
 
     private final VeiculoRepositoryPort repository;
-
-    public CadastrarVeiculoService(VeiculoRepositoryPort repository) {
-        this.repository = repository;
-    }
 
     @Override
     public UUID executar(CadastrarVeiculoCommand command) {

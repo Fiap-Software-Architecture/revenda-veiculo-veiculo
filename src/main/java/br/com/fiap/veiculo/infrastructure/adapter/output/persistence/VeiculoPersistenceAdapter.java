@@ -4,6 +4,7 @@ import br.com.fiap.veiculo.application.port.output.VeiculoRepositoryPort;
 import br.com.fiap.veiculo.domain.model.Placa;
 import br.com.fiap.veiculo.domain.model.StatusVeiculo;
 import br.com.fiap.veiculo.domain.model.Veiculo;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,13 +12,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
+@AllArgsConstructor
 public class VeiculoPersistenceAdapter implements VeiculoRepositoryPort {
 
     private final VeiculoRepositoryJpa repository;
-
-    public VeiculoPersistenceAdapter(VeiculoRepositoryJpa repository) {
-        this.repository = repository;
-    }
 
     @Override
     public boolean existePorPlaca(Placa placa) {
