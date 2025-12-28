@@ -6,6 +6,7 @@ import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.BuscarVeiculoPorIdUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.ListarVeiculosUseCase;
+import br.com.fiap.veiculo.application.port.input.RemoverVeiculoUseCase;
 import br.com.fiap.veiculo.domain.exception.VeiculoNaoEncontradoException;
 import br.com.fiap.veiculo.domain.model.Marca;
 import br.com.fiap.veiculo.domain.model.Placa;
@@ -47,6 +48,8 @@ class VeiculoControllerTest {
     private CadastrarVeiculoUseCase cadastrarVeiculoUseCase;
     @MockitoBean
     private AtualizarVeiculoUseCase alterarVeiculoUseCase;
+    @MockitoBean
+    private RemoverVeiculoUseCase removerVeiculoUseCase;
 
     @Test
     void cadastrar_deveRetornar201ComJsonId() throws Exception {

@@ -4,6 +4,7 @@ import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.BuscarVeiculoPorIdUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.ListarVeiculosUseCase;
+import br.com.fiap.veiculo.application.port.input.RemoverVeiculoUseCase;
 import br.com.fiap.veiculo.domain.model.StatusVeiculo;
 import br.com.fiap.veiculo.domain.model.Veiculo;
 import br.com.fiap.veiculo.infrastructure.adapter.input.rest.request.AtualizarVeiculoRequest;
@@ -15,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +39,7 @@ public class VeiculoController {
     private final ListarVeiculosUseCase listarVeiculos;
     private final CadastrarVeiculoUseCase cadastrarVeiculo;
     private final AtualizarVeiculoUseCase atualizarVeiculo;
+    private final RemoverVeiculoUseCase removerVeiculo;
 
     @GetMapping("/{id}")
     public ResponseEntity<VeiculoResponse> buscarPorId(@PathVariable UUID id) {
@@ -75,7 +78,13 @@ public class VeiculoController {
             @RequestBody @Valid AtualizarVeiculoRequest request
     ) {
         atualizarVeiculo.executar(request.toCommand(id));
-        return ResponseEntity.noContent().build(); // 204
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> remover(@PathVariable UUID id) {
+        removerVeiculo.executar(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
