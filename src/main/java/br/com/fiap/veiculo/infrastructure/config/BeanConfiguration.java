@@ -19,7 +19,9 @@ public class BeanConfiguration {
     }
 
     @Bean
-    AtualizarVeiculoUseCase atualizarVeiculoUseCase(VeiculoRepositoryPort repository) {
+    AtualizarVeiculoUseCase atualizarVeiculoUseCase(
+            VeiculoRepositoryPort repository
+    ) {
         return new AtualizarVeiculoService(repository);
     }
 

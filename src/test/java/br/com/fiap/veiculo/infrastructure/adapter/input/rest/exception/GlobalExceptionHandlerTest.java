@@ -2,6 +2,7 @@ package br.com.fiap.veiculo.infrastructure.adapter.input.rest.exception;
 
 import br.com.fiap.veiculo.domain.exception.DomainValidationException;
 import br.com.fiap.veiculo.domain.exception.PlacaJaCadastradaException;
+import br.com.fiap.veiculo.domain.exception.VeiculoNaoEncontradoException;
 import br.com.fiap.veiculo.domain.model.Placa;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -127,4 +129,32 @@ class GlobalExceptionHandlerTest {
         assertEquals("/veiculos", body.path());
         assertTrue(body.fieldErrors().isEmpty());
     }
+
+    @Test
+    void handleVeiculoNaoEncontrado_deveRetornar404() {
+        // arrange
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getRequestURI()).thenReturn("/veiculos/22222222-2222-2222-2222-222222222222");
+
+        UUID id = UUID.fromString("22222222-2222-2222-2222-222222222222");
+        VeiculoNaoEncontradoException ex = new VeiculoNaoEncontradoException(id);
+
+        // act
+        ResponseEntity<ApiErrorResponse> response =
+                handler.handleVeiculoNaoEncontrado(ex, request);
+
+        // assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+        ApiErrorResponse body = response.getBody();
+        assertNotNull(body);
+
+        assertNotNull(body.timestamp());
+        assertEquals(404, body.status());
+        assertEquals("Not Found", body.error());
+        assertEquals("Veículo não encontrado. id=" + id, body.message());
+        assertEquals("/veiculos/22222222-2222-2222-2222-222222222222", body.path());
+        assertTrue(body.fieldErrors().isEmpty());
+    }
+
 }

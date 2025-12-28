@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -94,7 +95,77 @@ class VeiculoPersistenceAdapterTest {
         assertEquals(veiculoDominio.getStatus(), veiculoSalvo.getStatus());
     }
 
-    // ===== Helpers de reflexão =====
+    @Test
+    void existePorPlacaEIdDiferente_deveDelegarParaRepositoryJpa() {
+        // arrange
+        Placa placa = new Placa("ABC1D23");
+        UUID id = UUID.fromString("11111111-1111-1111-1111-111111111111");
+
+        when(repositoryJpa.existsByPlacaAndIdNot("ABC1D23", id)).thenReturn(true);
+
+        // act
+        boolean existe = adapter.existePorPlacaEIdDiferente(placa, id);
+
+        // assert
+        assertTrue(existe);
+        verify(repositoryJpa, times(1)).existsByPlacaAndIdNot("ABC1D23", id);
+        verifyNoMoreInteractions(repositoryJpa);
+    }
+
+    @Test
+    void buscarPorId_quandoEncontrado_deveConverterEntityParaDominio() {
+        // arrange
+        UUID id = UUID.fromString("22222222-2222-2222-2222-222222222222");
+
+        VeiculoJpaEntity entity = VeiculoJpaEntity.fromDomain(
+                new Veiculo(
+                        id,
+                        new Placa("ABC1D23"),
+                        Marca.FIAT,
+                        "Uno",
+                        2020,
+                        "Branco",
+                        new BigDecimal("35000.00"),
+                        StatusVeiculo.DISPONIVEL
+                )
+        );
+
+        when(repositoryJpa.findById(id)).thenReturn(Optional.of(entity));
+
+        // act
+        Optional<Veiculo> result = adapter.buscarPorId(id);
+
+        // assert
+        assertTrue(result.isPresent());
+        Veiculo veiculo = result.get();
+
+        assertEquals(id, veiculo.getId());
+        assertEquals(new Placa("ABC1D23"), veiculo.getPlaca());
+        assertEquals(Marca.FIAT, veiculo.getMarca());
+        assertEquals("Uno", veiculo.getModelo());
+        assertEquals(2020, veiculo.getAno());
+        assertEquals("Branco", veiculo.getCor());
+        assertEquals(new BigDecimal("35000.00"), veiculo.getPreco());
+        assertEquals(StatusVeiculo.DISPONIVEL, veiculo.getStatus());
+
+        verify(repositoryJpa, times(1)).findById(id);
+        verifyNoMoreInteractions(repositoryJpa);
+    }
+
+    @Test
+    void buscarPorId_quandoNaoEncontrado_deveRetornarOptionalVazio() {
+        // arrange
+        UUID id = UUID.fromString("33333333-3333-3333-3333-333333333333");
+        when(repositoryJpa.findById(id)).thenReturn(Optional.empty());
+
+        // act
+        Optional<Veiculo> result = adapter.buscarPorId(id);
+
+        // assert
+        assertTrue(result.isEmpty());
+        verify(repositoryJpa, times(1)).findById(id);
+        verifyNoMoreInteractions(repositoryJpa);
+    }
 
     private static Object getField(Object target, String fieldName) {
         try {
