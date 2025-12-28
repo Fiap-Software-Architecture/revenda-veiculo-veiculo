@@ -1,7 +1,9 @@
 package br.com.fiap.veiculo.infrastructure.config;
 
+import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.output.VeiculoRepositoryPort;
+import br.com.fiap.veiculo.application.service.AtualizarVeiculoService;
 import br.com.fiap.veiculo.application.service.CadastrarVeiculoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,8 +41,26 @@ class BeanConfigurationTest {
 
         assertNotNull(useCase);
 
-        // Se o contexto subiu, a injeção já aconteceu.
-        // E a implementação esperada está correta.
         assertInstanceOf(CadastrarVeiculoService.class, useCase);
     }
+
+    @Test
+    void deveCriarBeanAtualizarVeiculoUseCase() {
+        AtualizarVeiculoUseCase useCase =
+                applicationContext.getBean(AtualizarVeiculoUseCase.class);
+
+        assertNotNull(useCase);
+        assertInstanceOf(AtualizarVeiculoService.class, useCase);
+    }
+
+    @Test
+    void deveInjetarRepositorioNoAtualizarUseCase() {
+        AtualizarVeiculoUseCase useCase =
+                applicationContext.getBean(AtualizarVeiculoUseCase.class);
+
+        assertNotNull(useCase);
+
+        assertInstanceOf(AtualizarVeiculoService.class, useCase);
+    }
+
 }
