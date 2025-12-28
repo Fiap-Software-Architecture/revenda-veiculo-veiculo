@@ -1,6 +1,7 @@
 package br.com.fiap.veiculo.infrastructure.adapter.input.rest;
 
 import br.com.fiap.veiculo.application.dto.CadastrarVeiculoCommand;
+import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -26,6 +27,9 @@ class VeiculoControllerTest {
 
     @MockitoBean
     private CadastrarVeiculoUseCase cadastrarVeiculoUseCase;
+
+    @MockitoBean
+    private AtualizarVeiculoUseCase alterarVeiculoUseCase;
 
     @Test
     void cadastrar_deveRetornar201ComJsonId() throws Exception {

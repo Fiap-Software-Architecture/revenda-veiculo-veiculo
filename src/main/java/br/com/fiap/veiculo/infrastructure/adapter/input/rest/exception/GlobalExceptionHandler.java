@@ -2,6 +2,7 @@ package br.com.fiap.veiculo.infrastructure.adapter.input.rest.exception;
 
 import br.com.fiap.veiculo.domain.exception.DomainValidationException;
 import br.com.fiap.veiculo.domain.exception.PlacaJaCadastradaException;
+import br.com.fiap.veiculo.domain.exception.VeiculoNaoEncontradoException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,6 +93,23 @@ public class GlobalExceptionHandler {
                         ex.getMessage(),
                         request.getRequestURI(),
                         List.of()));
+    }
+
+    @ExceptionHandler(VeiculoNaoEncontradoException.class)
+    public ResponseEntity<ApiErrorResponse> handleVeiculoNaoEncontrado(
+            VeiculoNaoEncontradoException ex,
+            HttpServletRequest request
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ApiErrorResponse(
+                        Instant.now(),
+                        HttpStatus.NOT_FOUND.value(),
+                        HttpStatus.NOT_FOUND.getReasonPhrase(),
+                        ex.getMessage(),
+                        request.getRequestURI(),
+                        List.of()
+                ));
     }
 
     private ApiErrorResponse.FieldErrorItem toFieldErrorItem(FieldError fe) {
