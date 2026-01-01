@@ -2,6 +2,7 @@ package br.com.fiap.veiculo.infrastructure.adapter.input.rest;
 
 import br.com.fiap.veiculo.application.dto.AtualizarVeiculoCommand;
 import br.com.fiap.veiculo.application.dto.CadastrarVeiculoCommand;
+import br.com.fiap.veiculo.application.port.input.AtualizarStatusVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.BuscarVeiculoPorIdUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
@@ -51,6 +52,8 @@ class VeiculoControllerTest {
     private AtualizarVeiculoUseCase alterarVeiculoUseCase;
     @MockitoBean
     private RemoverVeiculoUseCase removerVeiculoUseCase;
+    @MockitoBean
+    private AtualizarStatusVeiculoUseCase atualizarStatusVeiculoUseCase;
 
     @Test
     void cadastrar_deveRetornar201ComJsonId() throws Exception {

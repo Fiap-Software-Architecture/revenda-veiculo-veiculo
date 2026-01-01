@@ -1,5 +1,6 @@
 package br.com.fiap.veiculo.infrastructure.adapter.input.rest;
 
+import br.com.fiap.veiculo.application.port.input.AtualizarStatusVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.AtualizarVeiculoUseCase;
 import br.com.fiap.veiculo.application.port.input.BuscarVeiculoPorIdUseCase;
 import br.com.fiap.veiculo.application.port.input.CadastrarVeiculoUseCase;
@@ -7,6 +8,7 @@ import br.com.fiap.veiculo.application.port.input.ListarVeiculosUseCase;
 import br.com.fiap.veiculo.application.port.input.RemoverVeiculoUseCase;
 import br.com.fiap.veiculo.domain.model.StatusVeiculo;
 import br.com.fiap.veiculo.domain.model.Veiculo;
+import br.com.fiap.veiculo.infrastructure.adapter.input.rest.request.AtualizarStatusVeiculoRequest;
 import br.com.fiap.veiculo.infrastructure.adapter.input.rest.request.AtualizarVeiculoRequest;
 import br.com.fiap.veiculo.infrastructure.adapter.input.rest.request.CadastrarVeiculoRequest;
 import br.com.fiap.veiculo.infrastructure.adapter.input.rest.response.CadastrarVeiculoResponse;
@@ -36,6 +38,7 @@ public class VeiculoController {
     private final CadastrarVeiculoUseCase cadastrarVeiculo;
     private final AtualizarVeiculoUseCase atualizarVeiculo;
     private final RemoverVeiculoUseCase removerVeiculo;
+    private final AtualizarStatusVeiculoUseCase atualizarStatusVeiculoUseCase;
 
     @Operation(summary = "Busca um veículo pelo id")
     @ApiResponses({
@@ -118,6 +121,22 @@ public class VeiculoController {
             @PathVariable UUID id
     ) {
         removerVeiculo.executar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Atualiza o status do veículo")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Status atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Status inválido"),
+            @ApiResponse(responseCode = "404", description = "Veículo não encontrado"),
+            @ApiResponse(responseCode = "409", description = "Veículo já vendido")
+    })
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> atualizarStatus(
+            @PathVariable UUID id,
+            @Valid @RequestBody AtualizarStatusVeiculoRequest request
+    ) {
+        atualizarStatusVeiculoUseCase.atualizarStatus(id, request.status());
         return ResponseEntity.noContent().build();
     }
 
