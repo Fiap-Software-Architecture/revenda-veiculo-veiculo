@@ -11,21 +11,4 @@ CREATE TABLE IF NOT EXISTS veiculos (
     updated_at TIMESTAMP WITHOUT TIME ZONE
 );
 
-
-CREATE TABLE IF NOT EXISTS clientes (
-    id UUID PRIMARY KEY,
-    cpf VARCHAR(14) NOT NULL UNIQUE,
-    nome VARCHAR(255),
-    sobrenome VARCHAR(255)
-);
-
-CREATE TABLE IF NOT EXISTS compras (
-    cliente_id UUID NOT NULL,
-    veiculo_id UUID NOT NULL,
-    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
-
-    CONSTRAINT pk_compras PRIMARY KEY (cliente_id, veiculo_id)
-);
-
-CREATE INDEX idx_compras_cliente_id ON compras (cliente_id);
 CREATE INDEX idx_compras_veiculo_id ON compras (veiculo_id);
